@@ -198,5 +198,5 @@ return [
     |
     */
 
-    'csrf_protection' => false,
+    'csrf_protection' => true,
 ];
