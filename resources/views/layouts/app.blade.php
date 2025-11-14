@@ -19,6 +19,9 @@
 
     <!-- Livewire Styles -->
     @livewireStyles
+
+    <!-- Stack para estilos adicionais -->
+    @stack('styles')
 </head>
 
 <body class="h-full flex flex-col font-inter text-text-dark leading-relaxed bg-white">
@@ -40,6 +43,9 @@
 
     <!-- Livewire Scripts -->
     @livewireScripts
+
+    <!-- Stack para scripts adicionais -->
+    @stack('scripts')
 </body>
 
 </html>

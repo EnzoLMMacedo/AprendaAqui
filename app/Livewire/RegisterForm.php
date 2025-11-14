@@ -14,12 +14,14 @@ class RegisterForm extends Component
     public $email = '';
     public $password = '';
     public $password_confirmation = '';
+    public $role = 'user';
     public $isLoading = false;
 
     protected $rules = [
         'name' => 'required|min:3',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:6|confirmed',
+        'role' => 'required|in:user,admin',
     ];
 
     protected $messages = [
@@ -45,7 +47,6 @@ class RegisterForm extends Component
 
     public function register()
     {
-        dd('kdashj');
         $this->isLoading = true;
         
         try {
@@ -56,6 +57,7 @@ class RegisterForm extends Component
                 'name' => $this->name,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
+                'role' => $this->role,
             ]);
 
             Auth::login($user);

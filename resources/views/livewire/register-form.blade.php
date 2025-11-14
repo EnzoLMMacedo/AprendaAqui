@@ -1,32 +1,44 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div class="text-center">
-            <div class="mx-auto h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-                <i class="fas fa-user-plus text-2xl text-blue-600"></i>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <!-- Background Decorations -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <div class="max-w-md w-full space-y-8 relative z-10 animate-fade-in">
+        <!-- Header -->
+        <div class="text-center animate-slide-down">
+            <div class="mx-auto h-20 w-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-105">
+                <i class="fas fa-user-plus text-3xl text-white"></i>
             </div>
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Criar Conta</h2>
-            <p class="text-gray-600">Comece sua jornada na programação hoje</p>
+            <h2 class="text-4xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Criar Conta
+            </h2>
+            <p class="text-gray-600 text-lg">Comece sua jornada na programação hoje</p>
         </div>
 
         <!-- Flash Messages -->
         @if (session()->has('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center">
-                <i class="fas fa-check-circle mr-2"></i>
-                {{ session('success') }}
+            <div class="bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-lg flex items-center animate-slide-down shadow-md">
+                <i class="fas fa-check-circle mr-3 text-green-500"></i>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session()->has('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
-                <i class="fas fa-exclamation-circle mr-2"></i>
-                {{ session('error') }}
+            <div class="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg flex items-center animate-slide-down shadow-md">
+                <i class="fas fa-exclamation-circle mr-3 text-red-500"></i>
+                <span>{{ session('error') }}</span>
             </div>
         @endif
 
-        <div class="bg-white py-8 px-6 shadow-xl rounded-2xl border border-gray-200">
-            <form wire:submit.prevent="register" class="space-y-6">
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+        <!-- Card -->
+        <div class="card-glass py-8 px-6 sm:px-8 animate-scale-in">
+            <form wire:submit.prevent="register" class="space-y-5">
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-user text-blue-600 mr-2"></i>
                         Nome Completo
                     </label>
@@ -34,20 +46,22 @@
                         wire:model="name" 
                         type="text" 
                         id="name"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('name') border-red-500 @enderror"
+                        class="input-modern @error('name') border-red-500 focus:ring-red-500 @enderror"
                         placeholder="Seu nome completo"
                         required
+                        autocomplete="name"
                     >
                     @error('name')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <p class="text-sm text-red-600 flex items-center mt-1 animate-slide-down">
                             <i class="fas fa-exclamation-circle mr-2"></i>
                             {{ $message }}
                         </p>
                     @enderror
                 </div>
 
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                <!-- Email -->
+                <div class="space-y-2">
+                    <label for="email" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-envelope text-blue-600 mr-2"></i>
                         Email
                     </label>
@@ -55,20 +69,22 @@
                         wire:model="email" 
                         type="email" 
                         id="email"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('email') border-red-500 @enderror"
+                        class="input-modern @error('email') border-red-500 focus:ring-red-500 @enderror"
                         placeholder="seu@email.com"
                         required
+                        autocomplete="email"
                     >
                     @error('email')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <p class="text-sm text-red-600 flex items-center mt-1 animate-slide-down">
                             <i class="fas fa-exclamation-circle mr-2"></i>
                             {{ $message }}
                         </p>
                     @enderror
                 </div>
 
-                <div>
-                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                <!-- Password -->
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-lock text-blue-600 mr-2"></i>
                         Senha
                     </label>
@@ -76,20 +92,22 @@
                         wire:model="password" 
                         type="password" 
                         id="password"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('password') border-red-500 @enderror"
+                        class="input-modern @error('password') border-red-500 focus:ring-red-500 @enderror"
                         placeholder="Mínimo 6 caracteres"
                         required
+                        autocomplete="new-password"
                     >
                     @error('password')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
+                        <p class="text-sm text-red-600 flex items-center mt-1 animate-slide-down">
                             <i class="fas fa-exclamation-circle mr-2"></i>
                             {{ $message }}
                         </p>
                     @enderror
                 </div>
 
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                <!-- Password Confirmation -->
+                <div class="space-y-2">
+                    <label for="password_confirmation" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-lock text-blue-600 mr-2"></i>
                         Confirmar Senha
                     </label>
@@ -97,41 +115,85 @@
                         wire:model="password_confirmation" 
                         type="password" 
                         id="password_confirmation"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                        class="input-modern"
                         placeholder="Digite a senha novamente"
                         required
+                        autocomplete="new-password"
                     >
                 </div>
 
-                <!-- Botão de teste -->
-                <button 
-                    type="button"
-                    wire:click="test"
-                    class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold mb-4 transition-all duration-300 hover:bg-green-700"
-                >
-                    Testar Livewire
-                </button>
+                <!-- Role -->
+                <div class="space-y-2">
+                    <label for="role" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-user-shield text-blue-600 mr-2"></i>
+                        Tipo de Conta
+                    </label>
+                    <select 
+                        wire:model="role" 
+                        id="role"
+                        class="input-modern"
+                        required
+                    >
+                        <option value="user">Usuário Comum</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1 flex items-start gap-1">
+                        <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                        <span>Administradores podem cadastrar e gerenciar cursos</span>
+                    </p>
+                </div>
 
+                <!-- Submit Button -->
                 <button 
                     type="submit"
-                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
                     wire:loading.attr="disabled"
                 >
-                    <div wire:loading wire:target="register" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <div wire:loading wire:target="register" class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                     <i wire:loading.remove wire:target="register" class="fas fa-user-plus"></i>
                     <span wire:loading.remove wire:target="register">Criar Conta</span>
                     <span wire:loading wire:target="register">Criando...</span>
                 </button>
             </form>
 
-            <div class="mt-6 text-center">
+            <!-- Login Link -->
+            <div class="mt-8 pt-6 border-t border-gray-200 text-center">
                 <p class="text-gray-600">
                     Já tem uma conta? 
-                    <a href="{{ route('login') }}" class="text-blue-600 font-semibold hover:text-blue-700 transition-colors duration-300">
+                    <a href="{{ route('login') }}" class="text-blue-600 font-semibold hover:text-blue-700 transition-colors hover:underline inline-flex items-center gap-1">
                         Fazer login
+                        <i class="fas fa-arrow-right text-sm"></i>
                     </a>
                 </p>
             </div>
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    @keyframes blob {
+        0%, 100% {
+            transform: translate(0, 0) scale(1);
+        }
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+    }
+    
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+</style>
+@endpush

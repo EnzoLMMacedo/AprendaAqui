@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,39 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relacionamentos
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->withPivot('status', 'progress_percentage', 'completed_at')
+            ->withTimestamps();
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
+    }
+
+    public function instructorCourses()
+    {
+        return $this->hasMany(Course::class, 'instructor_id');
+    }
+
+    // Helpers
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }
