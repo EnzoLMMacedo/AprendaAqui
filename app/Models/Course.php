@@ -43,6 +43,14 @@ class Course extends Model
         'tags' => 'array',
     ];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     // Relacionamentos
     public function instructor(): BelongsTo
     {

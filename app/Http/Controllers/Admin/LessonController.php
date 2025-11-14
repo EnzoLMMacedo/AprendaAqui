@@ -22,8 +22,6 @@ class LessonController extends Controller
             'content' => 'nullable|string',
             'type' => 'required|in:video,text,quiz,assignment',
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240', // 10MB max
-            'is_free' => 'boolean',
-            'is_published' => 'boolean',
             'order' => 'nullable|integer',
             'materials' => 'nullable|array',
             'materials.*.title' => 'nullable|string',
@@ -42,8 +40,8 @@ class LessonController extends Controller
         $validated = $request->validate($rules);
 
         $validated['module_id'] = $module->id;
-        $validated['is_free'] = $request->has('is_free') ? true : false;
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_free'] = $request->boolean('is_free', false);
+        $validated['is_published'] = $request->boolean('is_published', false);
         $validated['order'] = $validated['order'] ?? ($module->lessons()->max('order') ?? 0) + 1;
 
         // Upload de PDF
@@ -130,8 +128,6 @@ class LessonController extends Controller
             'content' => 'nullable|string',
             'type' => 'required|in:video,text,quiz,assignment',
             'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-            'is_free' => 'boolean',
-            'is_published' => 'boolean',
             'order' => 'nullable|integer',
             'materials' => 'nullable|array',
             'materials.*.title' => 'nullable|string',
@@ -149,8 +145,8 @@ class LessonController extends Controller
 
         $validated = $request->validate($rules);
 
-        $validated['is_free'] = $request->has('is_free') ? true : false;
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_free'] = $request->boolean('is_free', false);
+        $validated['is_published'] = $request->boolean('is_published', false);
 
         // Upload de novo PDF (substitui o antigo)
         if ($request->hasFile('pdf_file')) {

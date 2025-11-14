@@ -158,6 +158,7 @@
             <!-- Checkboxes -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="flex items-center">
+                    <input type="hidden" name="is_free" value="0">
                     <input 
                         type="checkbox" 
                         id="is_free" 
@@ -172,6 +173,7 @@
                 </div>
 
                 <div class="flex items-center">
+                    <input type="hidden" name="is_published" value="0">
                     <input 
                         type="checkbox" 
                         id="is_published" 

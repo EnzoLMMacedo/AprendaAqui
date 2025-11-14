@@ -61,22 +61,58 @@
             <!-- Conteúdo Principal -->
             <div class="lg:col-span-3">
                 <div class="bg-gray-800 rounded-lg overflow-hidden">
-                    <!-- Player de Vídeo -->
+                    <!-- Conteúdo da Aula -->
                     @if($lesson->type === 'video' && $lesson->video_url)
+                        <!-- Player de Vídeo -->
                         <div class="bg-black aspect-video">
                             <iframe 
-                                src="{{ $lesson->video_url }}" 
+                                src="{{ $lesson->embed_url }}" 
                                 class="w-full h-full"
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
+                                allowfullscreen
+                                loading="lazy">
                             </iframe>
                         </div>
+                    @elseif($lesson->pdf_file)
+                        <!-- Visualizador de PDF -->
+                        <div class="bg-gray-900" style="height: 70vh;">
+                            <iframe 
+                                src="{{ Storage::url($lesson->pdf_file) }}" 
+                                class="w-full h-full"
+                                frameborder="0"
+                                loading="lazy">
+                            </iframe>
+                            <div class="bg-gray-800 p-4 border-t border-gray-700">
+                                <a href="{{ Storage::url($lesson->pdf_file) }}" 
+                                   target="_blank" 
+                                   class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                    Baixar PDF
+                                </a>
+                            </div>
+                        </div>
+                    @elseif($lesson->type === 'text' && $lesson->content)
+                        <!-- Conteúdo de Texto -->
+                        <div class="p-6 bg-gray-900 min-h-[400px]">
+                            <div class="prose prose-invert max-w-none text-gray-300">
+                                {!! $lesson->content !!}
+                            </div>
+                        </div>
                     @else
-                        <div class="bg-black aspect-video flex items-center justify-center">
+                        <!-- Placeholder quando não há conteúdo específico -->
+                        <div class="bg-gray-900 min-h-[400px] flex items-center justify-center">
                             <div class="text-center text-gray-400">
-                                <i class="fas fa-video text-6xl mb-4"></i>
-                                <p>Vídeo não disponível</p>
+                                @if($lesson->type === 'quiz')
+                                    <i class="fas fa-question-circle text-6xl mb-4"></i>
+                                    <p>Quiz/Exercício</p>
+                                @elseif($lesson->type === 'assignment')
+                                    <i class="fas fa-tasks text-6xl mb-4"></i>
+                                    <p>Atividade Prática</p>
+                                @else
+                                    <i class="fas fa-file-alt text-6xl mb-4"></i>
+                                    <p>Material de Aula</p>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -96,9 +132,58 @@
                             <p class="text-gray-300 mb-6">{{ $lesson->description }}</p>
                         @endif
 
-                        @if($lesson->content)
-                            <div class="prose prose-invert max-w-none mb-6">
+                        @if($lesson->type !== 'video' && $lesson->type !== 'text' && $lesson->content)
+                            <div class="prose prose-invert max-w-none mb-6 text-gray-300">
                                 {!! $lesson->content !!}
+                            </div>
+                        @endif
+
+                        <!-- Materiais Complementares -->
+                        @if($lesson->materials && count($lesson->materials) > 0)
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-white mb-3">
+                                    <i class="fas fa-book mr-2"></i> Materiais Complementares
+                                </h3>
+                                <div class="space-y-2">
+                                    @foreach($lesson->materials as $material)
+                                        @if(!empty($material['title']) || !empty($material['url']))
+                                            <a href="{{ $material['url'] ?? '#' }}" 
+                                               target="_blank" 
+                                               class="block p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    <i class="fas fa-external-link-alt text-blue-400"></i>
+                                                    <div>
+                                                        <div class="text-white font-medium">{{ $material['title'] ?? 'Link' }}</div>
+                                                        @if($material['url'])
+                                                            <div class="text-sm text-gray-400">{{ $material['url'] }}</div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Anexos -->
+                        @if($lesson->attachments && count($lesson->attachments) > 0)
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-white mb-3">
+                                    <i class="fas fa-paperclip mr-2"></i> Anexos
+                                </h3>
+                                <div class="space-y-2">
+                                    @foreach($lesson->attachments as $attachment)
+                                        <a href="{{ Storage::url($attachment) }}" 
+                                           target="_blank" 
+                                           class="block p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-file-download text-blue-400"></i>
+                                                <span class="text-white">{{ basename($attachment) }}</span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
 

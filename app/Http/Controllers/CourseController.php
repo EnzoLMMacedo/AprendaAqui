@@ -42,7 +42,11 @@ class CourseController extends Controller
     {
         $course = Course::where('slug', $slug)
             ->where('is_published', true)
-            ->with(['instructor', 'modules.lessons'])
+            ->with(['instructor', 'modules' => function($query) {
+                $query->orderBy('order');
+            }, 'modules.lessons' => function($query) {
+                $query->orderBy('order');
+            }])
             ->firstOrFail();
 
         $isEnrolled = false;

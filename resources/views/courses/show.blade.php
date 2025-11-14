@@ -89,7 +89,7 @@
                                 {{ $course->formatted_price }}
                             </div>
                         </div>
-                        <form method="POST" action="{{ route('courses.enroll', $course) }}">
+                        <form method="POST" action="{{ route('courses.enroll', ['slug' => $course->slug]) }}">
                             @csrf
                             <button type="submit" class="btn-primary w-full text-center flex items-center justify-center gap-2">
                                 <i class="fas fa-user-plus"></i>
@@ -146,26 +146,58 @@
                                 </div>
                                 <div class="divide-y divide-gray-100">
                                     @forelse($module->lessons as $lesson)
-                                        <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                                            <div class="flex items-center gap-3 flex-1">
-                                                @if($lesson->type === 'video')
-                                                    <i class="fas fa-play-circle text-blue-600 text-lg"></i>
-                                                @elseif($lesson->type === 'text')
-                                                    <i class="fas fa-file-alt text-gray-600 text-lg"></i>
-                                                @elseif($lesson->type === 'quiz')
-                                                    <i class="fas fa-question-circle text-yellow-600 text-lg"></i>
-                                                @else
-                                                    <i class="fas fa-tasks text-green-600 text-lg"></i>
-                                                @endif
-                                                <span class="text-gray-900 font-medium">{{ $lesson->title }}</span>
-                                                @if($lesson->is_free)
-                                                    <span class="badge badge-success text-xs">Gratuita</span>
+                                        @if($isEnrolled && $lesson->is_published)
+                                            <a href="{{ route('lessons.show', [$course->slug, $lesson->id]) }}" class="block px-5 py-4 flex items-center justify-between hover:bg-blue-50 transition-colors cursor-pointer">
+                                                <div class="flex items-center gap-3 flex-1">
+                                                    @if($lesson->type === 'video')
+                                                        <i class="fas fa-play-circle text-blue-600 text-lg"></i>
+                                                    @elseif($lesson->type === 'text')
+                                                        <i class="fas fa-file-alt text-gray-600 text-lg"></i>
+                                                    @elseif($lesson->type === 'quiz')
+                                                        <i class="fas fa-question-circle text-yellow-600 text-lg"></i>
+                                                    @else
+                                                        <i class="fas fa-tasks text-green-600 text-lg"></i>
+                                                    @endif
+                                                    <span class="text-gray-900 font-medium hover:text-blue-600">{{ $lesson->title }}</span>
+                                                    @if($lesson->is_free)
+                                                        <span class="badge badge-success text-xs">Gratuita</span>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    @if($lesson->video_duration)
+                                                        <span class="text-sm text-gray-500">{{ $lesson->video_duration }}</span>
+                                                    @endif
+                                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                                </div>
+                                            </a>
+                                        @else
+                                            <div class="px-5 py-4 flex items-center justify-between {{ (!$isEnrolled || !$lesson->is_published) ? 'opacity-60' : '' }}">
+                                                <div class="flex items-center gap-3 flex-1">
+                                                    @if($lesson->type === 'video')
+                                                        <i class="fas fa-play-circle text-blue-600 text-lg"></i>
+                                                    @elseif($lesson->type === 'text')
+                                                        <i class="fas fa-file-alt text-gray-600 text-lg"></i>
+                                                    @elseif($lesson->type === 'quiz')
+                                                        <i class="fas fa-question-circle text-yellow-600 text-lg"></i>
+                                                    @else
+                                                        <i class="fas fa-tasks text-green-600 text-lg"></i>
+                                                    @endif
+                                                    <span class="text-gray-900 font-medium">{{ $lesson->title }}</span>
+                                                    @if($lesson->is_free)
+                                                        <span class="badge badge-success text-xs">Gratuita</span>
+                                                    @endif
+                                                    @if(!$lesson->is_published)
+                                                        <span class="badge badge-gray text-xs">Não publicada</span>
+                                                    @endif
+                                                    @if(!$isEnrolled)
+                                                        <span class="badge badge-primary text-xs">Matricule-se para acessar</span>
+                                                    @endif
+                                                </div>
+                                                @if($lesson->video_duration)
+                                                    <span class="text-sm text-gray-500 ml-4">{{ $lesson->video_duration }}</span>
                                                 @endif
                                             </div>
-                                            @if($lesson->video_duration)
-                                                <span class="text-sm text-gray-500 ml-4">{{ $lesson->video_duration }}</span>
-                                            @endif
-                                        </div>
+                                        @endif
                                     @empty
                                         <div class="px-5 py-4 text-gray-500 text-sm">Nenhuma aula neste módulo</div>
                                     @endforelse

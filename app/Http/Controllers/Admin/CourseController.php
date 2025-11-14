@@ -45,8 +45,6 @@ class CourseController extends Controller
             'category' => 'required|string',
             'level' => 'required|in:beginner,intermediate,advanced',
             'price' => 'nullable|numeric|min:0',
-            'is_free' => 'boolean',
-            'is_published' => 'boolean',
             'duration_hours' => 'nullable|integer|min:0',
             'what_you_will_learn' => 'nullable|string',
             'requirements' => 'nullable|string',
@@ -55,8 +53,8 @@ class CourseController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
         $validated['instructor_id'] = Auth::id();
-        $validated['is_free'] = $request->has('is_free') ? true : false;
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_free'] = $request->boolean('is_free', false);
+        $validated['is_published'] = $request->boolean('is_published', false);
         $validated['price'] = $validated['is_free'] ? 0 : ($validated['price'] ?? 0);
         
         // Converter tags de string para array
@@ -118,8 +116,6 @@ class CourseController extends Controller
             'category' => 'required|string',
             'level' => 'required|in:beginner,intermediate,advanced',
             'price' => 'nullable|numeric|min:0',
-            'is_free' => 'boolean',
-            'is_published' => 'boolean',
             'duration_hours' => 'nullable|integer|min:0',
             'what_you_will_learn' => 'nullable|string',
             'requirements' => 'nullable|string',
@@ -138,8 +134,8 @@ class CourseController extends Controller
             $validated['slug'] = $newSlug;
         }
 
-        $validated['is_free'] = $request->has('is_free') ? true : false;
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_free'] = $request->boolean('is_free', false);
+        $validated['is_published'] = $request->boolean('is_published', false);
         $validated['price'] = $validated['is_free'] ? 0 : ($validated['price'] ?? 0);
         
         // Converter tags de string para array

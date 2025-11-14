@@ -18,11 +18,10 @@ class ModuleController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'order' => 'nullable|integer',
-            'is_published' => 'boolean',
         ]);
 
         $validated['course_id'] = $course->id;
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_published'] = $request->boolean('is_published', false);
         $validated['order'] = $validated['order'] ?? ($course->modules()->max('order') ?? 0) + 1;
 
         $module = Module::create($validated);
@@ -41,10 +40,9 @@ class ModuleController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'order' => 'nullable|integer',
-            'is_published' => 'boolean',
         ]);
 
-        $validated['is_published'] = $request->has('is_published') ? true : false;
+        $validated['is_published'] = $request->boolean('is_published', false);
 
         $module->update($validated);
 

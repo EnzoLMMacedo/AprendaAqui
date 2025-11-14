@@ -80,7 +80,13 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <button onclick="openModuleModal({{ $module->id }})" class="text-blue-600 hover:text-blue-800 transition-colors" title="Editar">
+                                    <button onclick="openModuleModal({{ $module->id }}, this)" 
+                                            class="text-blue-600 hover:text-blue-800 transition-colors" 
+                                            title="Editar"
+                                            data-module-title="{{ htmlspecialchars($module->title, ENT_QUOTES) }}"
+                                            data-module-description="{{ htmlspecialchars($module->description ?? '', ENT_QUOTES) }}"
+                                            data-module-order="{{ $module->order }}"
+                                            data-module-published="{{ $module->is_published ? '1' : '0' }}">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button onclick="openLessonModal({{ $module->id }})" class="text-green-600 hover:text-green-800 transition-colors" title="Adicionar Aula" data-module-id="{{ $module->id }}">
@@ -123,7 +129,19 @@
                                             @if($lesson->video_duration)
                                                 <span class="text-sm text-gray-500 mr-2">{{ $lesson->video_duration }}</span>
                                             @endif
-                                            <button onclick="openLessonModal({{ $module->id }}, {{ $lesson->id }})" class="text-blue-600 hover:text-blue-800 transition-colors" title="Editar">
+                                            <button onclick="openLessonModal({{ $module->id }}, {{ $lesson->id }}, this)" 
+                                                    class="text-blue-600 hover:text-blue-800 transition-colors" 
+                                                    title="Editar"
+                                                    data-lesson-title="{{ htmlspecialchars($lesson->title, ENT_QUOTES) }}"
+                                                    data-lesson-description="{{ htmlspecialchars($lesson->description ?? '', ENT_QUOTES) }}"
+                                                    data-lesson-type="{{ $lesson->type }}"
+                                                    data-lesson-order="{{ $lesson->order }}"
+                                                    data-lesson-video-url="{{ htmlspecialchars($lesson->video_url ?? '', ENT_QUOTES) }}"
+                                                    data-lesson-video-duration="{{ htmlspecialchars($lesson->video_duration ?? '', ENT_QUOTES) }}"
+                                                    data-lesson-content="{{ htmlspecialchars($lesson->content ?? '', ENT_QUOTES) }}"
+                                                    data-lesson-is-free="{{ $lesson->is_free ? '1' : '0' }}"
+                                                    data-lesson-is-published="{{ $lesson->is_published ? '1' : '0' }}"
+                                                    data-lesson-materials="{{ json_encode($lesson->materials ?? []) }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <form method="POST" action="{{ route('admin.lessons.destroy', [$course, $module, $lesson]) }}" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir esta aula?');">
@@ -192,7 +210,8 @@
                 </div>
                 
                 <div class="flex items-center pt-2">
-                    <input type="checkbox" name="is_published" id="modulePublished" class="h-4 w-4 text-blue-600">
+                    <input type="hidden" name="is_published" value="0">
+                    <input type="checkbox" name="is_published" id="modulePublished" value="1" class="h-4 w-4 text-blue-600">
                     <label for="modulePublished" class="ml-2 text-sm text-gray-700">Publicar imediatamente</label>
                 </div>
             </div>
@@ -294,11 +313,13 @@
                 
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-2">
                     <label class="flex items-center">
-                        <input type="checkbox" name="is_free" id="lessonIsFree" class="h-4 w-4 text-blue-600">
+                        <input type="hidden" name="is_free" value="0">
+                        <input type="checkbox" name="is_free" id="lessonIsFree" value="1" class="h-4 w-4 text-blue-600">
                         <span class="ml-2 text-sm text-gray-700">Aula Gratuita</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="checkbox" name="is_published" id="lessonPublished" class="h-4 w-4 text-blue-600">
+                        <input type="hidden" name="is_published" value="0">
+                        <input type="checkbox" name="is_published" id="lessonPublished" value="1" class="h-4 w-4 text-blue-600">
                         <span class="ml-2 text-sm text-gray-700">Publicar imediatamente</span>
                     </label>
                 </div>
@@ -316,24 +337,30 @@
 <script>
 let materialCount = 1;
 
-function openModuleModal(moduleId = null) {
+function openModuleModal(moduleId = null, buttonElement = null) {
     const modal = document.getElementById('moduleModal');
     const form = document.getElementById('moduleForm');
     const title = document.getElementById('moduleModalTitle');
     const methodDiv = document.getElementById('moduleFormMethod');
     
-    if (moduleId) {
+    if (moduleId && buttonElement) {
         // Editar módulo existente
         title.textContent = 'Editar Módulo';
         form.action = '{{ route("admin.modules.update", [$course, ":module"]) }}'.replace(':module', moduleId);
         methodDiv.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-        // Carregar dados do módulo (você pode fazer via AJAX ou passar via data attributes)
+        
+        // Carregar dados do módulo
+        document.getElementById('moduleTitle').value = buttonElement.getAttribute('data-module-title') || '';
+        document.getElementById('moduleDescription').value = buttonElement.getAttribute('data-module-description') || '';
+        document.getElementById('moduleOrder').value = buttonElement.getAttribute('data-module-order') || '';
+        document.getElementById('modulePublished').checked = buttonElement.getAttribute('data-module-published') === '1';
     } else {
         // Novo módulo
         title.textContent = 'Novo Módulo';
         form.action = '{{ route("admin.modules.store", $course) }}';
         methodDiv.innerHTML = '';
         form.reset();
+        document.getElementById('modulePublished').checked = false;
     }
     
     modal.classList.remove('hidden');
@@ -343,7 +370,7 @@ function closeModuleModal() {
     document.getElementById('moduleModal').classList.add('hidden');
 }
 
-function openLessonModal(moduleId, lessonId = null) {
+function openLessonModal(moduleId, lessonId = null, buttonElement = null) {
     if (!moduleId) {
         alert('Erro: ID do módulo não encontrado. Por favor, recarregue a página.');
         return;
@@ -354,17 +381,91 @@ function openLessonModal(moduleId, lessonId = null) {
     const title = document.getElementById('lessonModalTitle');
     const methodDiv = document.getElementById('lessonFormMethod');
     
-    if (lessonId) {
+    if (lessonId && buttonElement) {
         // Editar aula existente
         title.textContent = 'Editar Aula';
         form.action = '{{ route("admin.lessons.update", [$course, ":module", ":lesson"]) }}'.replace(':module', moduleId).replace(':lesson', lessonId);
         methodDiv.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+        
+        // Carregar dados da aula
+        if (buttonElement) {
+            document.getElementById('lessonTitle').value = buttonElement.getAttribute('data-lesson-title') || '';
+            document.getElementById('lessonDescription').value = buttonElement.getAttribute('data-lesson-description') || '';
+            document.getElementById('lessonType').value = buttonElement.getAttribute('data-lesson-type') || 'video';
+            document.getElementById('lessonOrder').value = buttonElement.getAttribute('data-lesson-order') || '';
+            document.getElementById('lessonVideoUrl').value = buttonElement.getAttribute('data-lesson-video-url') || '';
+            document.getElementById('lessonVideoDuration').value = buttonElement.getAttribute('data-lesson-video-duration') || '';
+            document.getElementById('lessonContent').value = buttonElement.getAttribute('data-lesson-content') || '';
+            document.getElementById('lessonIsFree').checked = buttonElement.getAttribute('data-lesson-is-free') === '1';
+            document.getElementById('lessonPublished').checked = buttonElement.getAttribute('data-lesson-is-published') === '1';
+            
+            // Carregar materiais
+            try {
+                const materials = JSON.parse(buttonElement.getAttribute('data-lesson-materials') || '[]');
+                const container = document.getElementById('materialsContainer');
+                container.innerHTML = '';
+                materialCount = 0;
+                
+                if (materials && materials.length > 0) {
+                    materials.forEach((material, index) => {
+                        if (material.title || material.url) {
+                            const div = document.createElement('div');
+                            div.className = 'flex flex-col sm:flex-row gap-2';
+                            div.innerHTML = `
+                                <input type="text" name="materials[${materialCount}][title]" placeholder="Título" value="${material.title || ''}" class="input-modern text-sm flex-1">
+                                <input type="url" name="materials[${materialCount}][url]" placeholder="URL" value="${material.url || ''}" class="input-modern text-sm flex-1">
+                                <button type="button" onclick="this.parentElement.remove()" class="btn-secondary text-sm px-3">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            container.appendChild(div);
+                            materialCount++;
+                        }
+                    });
+                }
+                
+                // Adicionar campo vazio se não houver materiais
+                if (materialCount === 0) {
+                    const div = document.createElement('div');
+                    div.className = 'flex flex-col sm:flex-row gap-2';
+                    div.innerHTML = `
+                        <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-sm flex-1">
+                        <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-sm flex-1">
+                        <button type="button" onclick="addMaterial()" class="btn-secondary text-sm px-3">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    `;
+                    container.appendChild(div);
+                    materialCount = 1;
+                }
+            } catch (e) {
+                console.error('Erro ao carregar materiais:', e);
+            }
+            
+            toggleLessonFields();
+        }
     } else {
         // Nova aula
         title.textContent = 'Nova Aula';
         form.action = '{{ route("admin.lessons.store", [$course, ":module"]) }}'.replace(':module', moduleId);
         methodDiv.innerHTML = '';
         form.reset();
+        document.getElementById('lessonIsFree').checked = false;
+        document.getElementById('lessonPublished').checked = false;
+        
+        // Limpar materiais
+        const container = document.getElementById('materialsContainer');
+        container.innerHTML = `
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-sm flex-1">
+                <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-sm flex-1">
+                <button type="button" onclick="addMaterial()" class="btn-secondary text-sm px-3">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        materialCount = 1;
+        
         toggleLessonFields();
     }
     
