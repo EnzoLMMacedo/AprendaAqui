@@ -181,7 +181,7 @@
 </div>
 
 <!-- Modal para Módulo -->
-<div id="moduleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-2 sm:p-4">
+<div id="moduleModal" class="fixed inset-0 bg-white bg-opacity-80 hidden z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-md">
     <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col animate-scale-in">
         <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
             <h3 class="text-xl sm:text-2xl font-bold text-gray-900" id="moduleModalTitle">Novo Módulo</h3>
@@ -225,28 +225,28 @@
 </div>
 
 <!-- Modal para Aula -->
-<div id="lessonModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[95vh] flex flex-col animate-scale-in">
-        <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
-            <h3 class="text-xl sm:text-2xl font-bold text-gray-900" id="lessonModalTitle">Nova Aula</h3>
+<div id="lessonModal" class="fixed inset-0 bg-white bg-opacity-80 hidden z-50 flex items-start justify-center p-1 sm:p-2 backdrop-blur-md overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-2xl max-w-xl w-full flex flex-col animate-scale-in my-2 sm:my-4">
+        <div class="p-2 sm:p-3 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+            <h3 class="text-base sm:text-lg font-bold text-gray-900" id="lessonModalTitle">Nova Aula</h3>
             <button onclick="closeLessonModal()" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times text-lg sm:text-xl"></i>
+                <i class="fas fa-times"></i>
             </button>
         </div>
-        <form id="lessonForm" method="POST" enctype="multipart/form-data" class="p-4 sm:p-6 overflow-y-auto flex-1" onsubmit="return validateLessonForm(event)">
+        <form id="lessonForm" method="POST" enctype="multipart/form-data" class="p-2 sm:p-3 overflow-y-auto max-h-[calc(100vh-120px)]" onsubmit="return validateLessonForm(event)">
             @csrf
             <div id="lessonFormMethod"></div>
             
-            <div class="space-y-3">
+            <div class="space-y-2">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Título da Aula *</label>
-                    <input type="text" name="title" id="lessonTitle" class="input-modern text-sm" required>
+                    <label class="block text-xs font-semibold text-gray-700 mb-0.5">Título da Aula *</label>
+                    <input type="text" name="title" id="lessonTitle" class="input-modern text-xs sm:text-sm py-1.5" required>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Aula *</label>
-                        <select name="type" id="lessonType" class="input-modern text-sm" required onchange="toggleLessonFields()">
+                        <label class="block text-xs font-semibold text-gray-700 mb-0.5">Tipo de Aula *</label>
+                        <select name="type" id="lessonType" class="input-modern text-xs sm:text-sm py-1.5" required onchange="toggleLessonFields()">
                             <option value="video">Videoaula</option>
                             <option value="text">Texto/Artigo</option>
                             <option value="quiz">Quiz/Exercício</option>
@@ -254,51 +254,51 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Ordem</label>
-                        <input type="number" name="order" id="lessonOrder" class="input-modern text-sm" min="0">
+                        <label class="block text-xs font-semibold text-gray-700 mb-0.5">Ordem</label>
+                        <input type="number" name="order" id="lessonOrder" class="input-modern text-xs sm:text-sm py-1.5" min="0">
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Descrição</label>
-                    <textarea name="description" id="lessonDescription" rows="2" class="input-modern text-sm"></textarea>
+                    <label class="block text-xs font-semibold text-gray-700 mb-0.5">Descrição</label>
+                    <textarea name="description" id="lessonDescription" rows="2" class="input-modern text-xs sm:text-sm py-1.5"></textarea>
                 </div>
                 
                 <!-- Campos específicos por tipo -->
-                <div id="videoFields" class="space-y-3">
+                <div id="videoFields" class="space-y-2">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">URL do Vídeo</label>
-                        <input type="url" name="video_url" id="lessonVideoUrl" class="input-modern text-sm" placeholder="https://youtube.com/watch?v=...">
+                        <label class="block text-xs font-semibold text-gray-700 mb-0.5">URL do Vídeo</label>
+                        <input type="url" name="video_url" id="lessonVideoUrl" class="input-modern text-xs sm:text-sm py-1.5" placeholder="https://youtube.com/watch?v=...">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Duração (HH:MM:SS)</label>
-                        <input type="text" name="video_duration" id="lessonVideoDuration" class="input-modern text-sm" placeholder="00:15:30">
+                        <label class="block text-xs font-semibold text-gray-700 mb-0.5">Duração (HH:MM:SS)</label>
+                        <input type="text" name="video_duration" id="lessonVideoDuration" class="input-modern text-xs sm:text-sm py-1.5" placeholder="00:15:30">
                     </div>
                 </div>
                 
                 <div id="textFields" class="hidden">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Conteúdo (Markdown)</label>
-                        <textarea name="content" id="lessonContent" rows="6" class="input-modern text-sm"></textarea>
+                        <label class="block text-xs font-semibold text-gray-700 mb-0.5">Conteúdo (Markdown)</label>
+                        <textarea name="content" id="lessonContent" rows="3" class="input-modern text-xs sm:text-sm py-1.5"></textarea>
                     </div>
                 </div>
                 
                 <!-- PDF -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">PDF da Aula (opcional)</label>
-                    <input type="file" name="pdf_file" id="lessonPdfFile" accept=".pdf" class="input-modern text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Máx: 10MB</p>
+                    <label class="block text-xs font-semibold text-gray-700 mb-0.5">PDF da Aula (opcional)</label>
+                    <input type="file" name="pdf_file" id="lessonPdfFile" accept=".pdf" class="input-modern text-xs sm:text-sm py-1">
+                    <p class="text-xs text-gray-500 mt-0.5">Máx: 10MB</p>
                 </div>
                 
                 <!-- Materiais Complementares -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Materiais Complementares</label>
-                    <div id="materialsContainer" class="space-y-2">
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-sm flex-1">
-                            <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-sm flex-1">
-                            <button type="button" onclick="addMaterial()" class="btn-secondary text-sm px-3">
-                                <i class="fas fa-plus"></i>
+                    <label class="block text-xs font-semibold text-gray-700 mb-0.5">Materiais Complementares</label>
+                    <div id="materialsContainer" class="space-y-1.5">
+                        <div class="flex flex-col sm:flex-row gap-1.5">
+                            <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                            <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                            <button type="button" onclick="addMaterial()" class="btn-secondary text-xs px-2 py-1.5">
+                                <i class="fas fa-plus text-xs"></i>
                             </button>
                         </div>
                     </div>
@@ -306,28 +306,28 @@
                 
                 <!-- Anexos -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Anexos</label>
-                    <input type="file" name="attachments[]" multiple class="input-modern text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Múltiplos arquivos permitidos</p>
+                    <label class="block text-xs font-semibold text-gray-700 mb-0.5">Anexos</label>
+                    <input type="file" name="attachments[]" multiple class="input-modern text-xs sm:text-sm py-1">
+                    <p class="text-xs text-gray-500 mt-0.5">Múltiplos arquivos permitidos</p>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-2">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 pt-1.5">
                     <label class="flex items-center">
                         <input type="hidden" name="is_free" value="0">
-                        <input type="checkbox" name="is_free" id="lessonIsFree" value="1" class="h-4 w-4 text-blue-600">
-                        <span class="ml-2 text-sm text-gray-700">Aula Gratuita</span>
+                        <input type="checkbox" name="is_free" id="lessonIsFree" value="1" class="h-3.5 w-3.5 text-blue-600">
+                        <span class="ml-1.5 text-xs text-gray-700">Aula Gratuita</span>
                     </label>
                     <label class="flex items-center">
                         <input type="hidden" name="is_published" value="0">
-                        <input type="checkbox" name="is_published" id="lessonPublished" value="1" class="h-4 w-4 text-blue-600">
-                        <span class="ml-2 text-sm text-gray-700">Publicar imediatamente</span>
+                        <input type="checkbox" name="is_published" id="lessonPublished" value="1" class="h-3.5 w-3.5 text-blue-600">
+                        <span class="ml-1.5 text-xs text-gray-700">Publicar imediatamente</span>
                     </label>
                 </div>
             </div>
             
-            <div class="flex items-center justify-end gap-3 mt-4 pt-4 border-t border-gray-200 flex-shrink-0">
-                <button type="button" onclick="closeLessonModal()" class="btn-secondary text-sm px-4 py-2">Cancelar</button>
-                <button type="submit" class="btn-primary text-sm px-4 py-2">Salvar Aula</button>
+            <div class="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-gray-200 flex-shrink-0">
+                <button type="button" onclick="closeLessonModal()" class="btn-secondary text-xs px-3 py-1.5">Cancelar</button>
+                <button type="submit" class="btn-primary text-xs px-3 py-1.5">Salvar Aula</button>
             </div>
         </form>
     </div>
@@ -410,12 +410,12 @@ function openLessonModal(moduleId, lessonId = null, buttonElement = null) {
                     materials.forEach((material, index) => {
                         if (material.title || material.url) {
                             const div = document.createElement('div');
-                            div.className = 'flex flex-col sm:flex-row gap-2';
+                            div.className = 'flex flex-col sm:flex-row gap-1.5';
                             div.innerHTML = `
-                                <input type="text" name="materials[${materialCount}][title]" placeholder="Título" value="${material.title || ''}" class="input-modern text-sm flex-1">
-                                <input type="url" name="materials[${materialCount}][url]" placeholder="URL" value="${material.url || ''}" class="input-modern text-sm flex-1">
-                                <button type="button" onclick="this.parentElement.remove()" class="btn-secondary text-sm px-3">
-                                    <i class="fas fa-times"></i>
+                                <input type="text" name="materials[${materialCount}][title]" placeholder="Título" value="${material.title || ''}" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                                <input type="url" name="materials[${materialCount}][url]" placeholder="URL" value="${material.url || ''}" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                                <button type="button" onclick="this.parentElement.remove()" class="btn-secondary text-xs px-2 py-1.5">
+                                    <i class="fas fa-times text-xs"></i>
                                 </button>
                             `;
                             container.appendChild(div);
@@ -427,12 +427,12 @@ function openLessonModal(moduleId, lessonId = null, buttonElement = null) {
                 // Adicionar campo vazio se não houver materiais
                 if (materialCount === 0) {
                     const div = document.createElement('div');
-                    div.className = 'flex flex-col sm:flex-row gap-2';
+                    div.className = 'flex flex-col sm:flex-row gap-1.5';
                     div.innerHTML = `
-                        <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-sm flex-1">
-                        <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-sm flex-1">
-                        <button type="button" onclick="addMaterial()" class="btn-secondary text-sm px-3">
-                            <i class="fas fa-plus"></i>
+                        <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                        <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                        <button type="button" onclick="addMaterial()" class="btn-secondary text-xs px-2 py-1.5">
+                            <i class="fas fa-plus text-xs"></i>
                         </button>
                     `;
                     container.appendChild(div);
@@ -456,11 +456,11 @@ function openLessonModal(moduleId, lessonId = null, buttonElement = null) {
         // Limpar materiais
         const container = document.getElementById('materialsContainer');
         container.innerHTML = `
-            <div class="flex flex-col sm:flex-row gap-2">
-                <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-sm flex-1">
-                <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-sm flex-1">
-                <button type="button" onclick="addMaterial()" class="btn-secondary text-sm px-3">
-                    <i class="fas fa-plus"></i>
+            <div class="flex flex-col sm:flex-row gap-1.5">
+                <input type="text" name="materials[0][title]" placeholder="Título" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                <input type="url" name="materials[0][url]" placeholder="URL" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+                <button type="button" onclick="addMaterial()" class="btn-secondary text-xs px-2 py-1.5">
+                    <i class="fas fa-plus text-xs"></i>
                 </button>
             </div>
         `;
@@ -470,10 +470,17 @@ function openLessonModal(moduleId, lessonId = null, buttonElement = null) {
     }
     
     modal.classList.remove('hidden');
+    // Scroll para o topo do modal
+    modal.scrollTop = 0;
+    form.scrollTop = 0;
+    // Prevenir scroll do body quando modal estiver aberto
+    document.body.style.overflow = 'hidden';
 }
 
 function closeLessonModal() {
     document.getElementById('lessonModal').classList.add('hidden');
+    // Restaurar scroll do body
+    document.body.style.overflow = '';
 }
 
 function toggleLessonFields() {
@@ -496,12 +503,12 @@ function toggleLessonFields() {
 function addMaterial() {
     const container = document.getElementById('materialsContainer');
     const div = document.createElement('div');
-    div.className = 'flex flex-col sm:flex-row gap-2';
+    div.className = 'flex flex-col sm:flex-row gap-1.5';
     div.innerHTML = `
-        <input type="text" name="materials[${materialCount}][title]" placeholder="Título" class="input-modern text-sm flex-1">
-        <input type="url" name="materials[${materialCount}][url]" placeholder="URL" class="input-modern text-sm flex-1">
-        <button type="button" onclick="this.parentElement.remove()" class="btn-secondary text-sm px-3">
-            <i class="fas fa-times"></i>
+        <input type="text" name="materials[${materialCount}][title]" placeholder="Título" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+        <input type="url" name="materials[${materialCount}][url]" placeholder="URL" class="input-modern text-xs sm:text-sm py-1.5 flex-1">
+        <button type="button" onclick="this.parentElement.remove()" class="btn-secondary text-xs px-2 py-1.5">
+            <i class="fas fa-times text-xs"></i>
         </button>
     `;
     container.appendChild(div);
