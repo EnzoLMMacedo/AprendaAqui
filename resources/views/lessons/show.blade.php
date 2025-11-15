@@ -78,19 +78,11 @@
                         <!-- Visualizador de PDF -->
                         <div class="bg-gray-900" style="height: 70vh;">
                             <iframe 
-                                src="{{ Storage::url($lesson->pdf_file) }}" 
+                                src="{{ route('lessons.pdf', [$course, $lesson]) }}" 
                                 class="w-full h-full"
                                 frameborder="0"
                                 loading="lazy">
                             </iframe>
-                            <div class="bg-gray-800 p-4 border-t border-gray-700">
-                                <a href="{{ Storage::url($lesson->pdf_file) }}" 
-                                   target="_blank" 
-                                   class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
-                                    <i class="fas fa-download"></i>
-                                    Baixar PDF
-                                </a>
-                            </div>
                         </div>
                     @elseif($lesson->type === 'text' && $lesson->content)
                         <!-- Conteúdo de Texto -->
@@ -119,6 +111,16 @@
 
                     <!-- Informações da Aula -->
                     <div class="p-6">
+                        @if($lesson->pdf_file)
+                            <div class="mb-4 pb-4 border-b border-gray-700">
+                                <a href="{{ route('lessons.pdf', [$course, $lesson]) }}" 
+                                   target="_blank" 
+                                   class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                    Baixar PDF
+                                </a>
+                            </div>
+                        @endif
                         <div class="flex items-center justify-between mb-4">
                             <h1 class="text-2xl font-bold text-white">{{ $lesson->title }}</h1>
                             @if($progress->is_completed)

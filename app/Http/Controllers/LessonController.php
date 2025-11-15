@@ -8,6 +8,7 @@ use App\Models\Lesson;
 use App\Models\Progress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LessonController extends Controller
 {
@@ -82,6 +83,39 @@ class LessonController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Aula concluída com sucesso!',
+        ]);
+    }
+
+    public function pdf($slug, Lesson $lesson)
+    {
+        $course = Course::where('slug', $slug)->firstOrFail();
+        
+        // Verificar se o usuário está matriculado
+        $enrollment = Enrollment::where('user_id', Auth::id())
+            ->where('course_id', $course->id)
+            ->first();
+
+        if (!$enrollment) {
+            abort(403, 'Você precisa se matricular no curso para acessar os materiais.');
+        }
+
+        // Verificar se a aula pertence ao curso
+        if ($lesson->module->course_id !== $course->id) {
+            abort(404);
+        }
+
+        // Verificar se o PDF existe
+        if (!$lesson->pdf_file || !Storage::disk('public')->exists($lesson->pdf_file)) {
+            abort(404, 'PDF não encontrado.');
+        }
+
+        // Retornar o arquivo PDF
+        $filePath = Storage::disk('public')->path($lesson->pdf_file);
+        $fileName = basename($lesson->pdf_file);
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
         ]);
     }
 

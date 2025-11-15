@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Aulas
     Route::get('/cursos/{slug}/aulas/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+    Route::get('/cursos/{slug}/aulas/{lesson}/pdf', [LessonController::class, 'pdf'])->name('lessons.pdf');
     Route::post('/cursos/{slug}/aulas/{lesson}/complete', [LessonController::class, 'complete'])->name('lessons.complete');
 });
 
